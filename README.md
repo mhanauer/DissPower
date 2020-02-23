@@ -28,7 +28,7 @@ Za = Z-score associated with alternative hypothesis 1.96
 CA0 = null hypothesis of Cronbach's alpha; 0
 CA1 = alterantive hypothesis of Cronbach's Alpha; .8
 $$ n = (({2k/(k-1))(Z_{a}/2+Z{b})^2}) / ln(\theta)^2)+2~~~ (1)$$
-$$ \theta = (1-CA_{0}) /(1-CA_{1})  $$
+$$ \theta = (1-CA_{0}) /(1-CA_{1})~~ (2)  $$
 Power analysis in r confirm correct replicate what Adam paper has
 ```{r}
 a = .05
@@ -102,8 +102,6 @@ RTE <- binds(error.cor); RTE
 ```
 Not set factor correlations
 The last matrix is the factor covariance matrix. Again, the factor covariance matrix can be separated into two parts: a vector of factor variances (or factor residual variances) and a matrix of factor correlation (or factor residual correlation). The default in this program is that the factor variances are constrained to be 1. All exogenous and endogenous factor variances are fixed parameters (i.e., fixed factor method of scale identification). Therefore, the only thing we need to specify is the factor correlation. For all correlation matrices, the diagonal elements are 1. In this model, we allow the only one element of factor correlation to be freely estimated and have the parameter/starting value of 0.5. Thus, latent correlation matrix is specified as:
-
-
 ```{r}
 latent.cor <- matrix(NA, 3, 3)
 diag(latent.cor) <- 1
@@ -118,23 +116,12 @@ summary(CFA.Model)
 ```
 Simulation
 ```{r}
-dat <- generate(CFA.Model, 160)
+dat <- generate(CFA.Model, 200)
 out <- analyze(CFA.Model, dat)
-Output <- sim(20, n=160, CFA.Model, multicore = TRUE)
+Output <- sim(10000, n = 130, CFA.Model, multicore = TRUE, seed= 123)
 summary(Output)
-summaryFit(Output)
-plotCutoff(Output, 0.05)
-Cpow <- getPower(Output)
-findPower(Cpow, 0.80)
+```
 
-```
-Review the cut off point
-```{r}
-Output <- sim(NULL, n=70:200, CFA.Model) 
-plotCutoff(Output, 0.05)
-Cpow <- getPower(Output)
-findPower(Cpow, "N", 0.80)
-```
 
 
 

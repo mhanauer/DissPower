@@ -10,15 +10,24 @@ Diss Power
 ```{r}
 library(pwr)
 ## Attidues
-pwr.t.test(n = 26, d = .5, type = "paired", alternative = "greater")
-pwr.t.test(n = 155, d = .2, type = "paired", alternative = "greater")
+#pwr.t.test(n = 26, d = .5, type = "paired", alternative = "greater")
+#pwr.t.test(n = 155, d = .2, type = "paired", alternative = "greater")
 
 ## Knowledge
 pwr.t.test(n = 11, d = .8, type = "paired", alternative = "greater")
+pwr.t.test(n = 10, d = .9, type = "paired", alternative = "greater")
 pwr.t.test(n = 8, d = 1, type = "paired", alternative = "greater")
 
-15*40*52
-30000*1.03
+### Knowledge not normal
+library(wmwpow)
+wmwpowd(n = 8, m = 8, distn = "norm(.80,.3)", distm = "norm(.30,.3)", sides = "greater",
+alpha = 0.05, nsims=10000)
+wmwpowd(n = 10, m = 10, distn = "norm(.80,.3)", distm = "norm(.35,.3)", sides = "greater",
+alpha = 0.05, nsims=10000)
+wmwpowd(n = 11, m = 11, distn = "norm(.80,.3)", distm = "norm(.40,.3)", sides = "greater",
+alpha = 0.05, nsims=10000)
+
+
 ```
 Diss power for cronbach
 a = alpha level; .05

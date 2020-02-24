@@ -114,7 +114,9 @@ The last matrix is the factor covariance matrix. Again, the factor covariance ma
 ```{r}
 latent.cor <- matrix(NA, 3, 3)
 diag(latent.cor) <- 1
-RPS <- binds(latent.cor, 0.5)
+RPS <- binds(latent.cor, 0.2)
+RPS
+RPS@popParam[1:2,3] = ".5"
 RPS
 
 ```
@@ -127,7 +129,7 @@ Simulation
 ```{r}
 dat <- generate(CFA.Model, 200)
 out <- analyze(CFA.Model, dat)
-Output <- sim(10000, n = 130, CFA.Model, multicore = TRUE, seed= 123)
+Output <- sim(100, n = 130, CFA.Model, multicore = TRUE, seed= 123)
 summary(Output)
 ```
 

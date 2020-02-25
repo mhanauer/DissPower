@@ -129,7 +129,10 @@ Simulation
 ```{r}
 dat <- generate(CFA.Model, 200)
 out <- analyze(CFA.Model, dat)
-Output <- sim(100, n = 130, CFA.Model, multicore = TRUE, seed= 123)
+Output_120 <- sim(100, n = 120, CFA.Model, multicore = TRUE, seed= 123)
+Output_130 <- sim(1000, n = 130, CFA.Model, multicore = TRUE, seed= 123)
+Output_140 <- sim(1000, n = 130, CFA.Model, multicore = TRUE, seed= 123)
+Output_150 <- sim(1000, n = 130, CFA.Model, multicore = TRUE, seed= 123)
 summary(Output)
 ```
 

@@ -135,6 +135,35 @@ Output_140 <- sim(1000, n = 130, CFA.Model, multicore = TRUE, seed= 123)
 Output_150 <- sim(1000, n = 130, CFA.Model, multicore = TRUE, seed= 123)
 summary(Output)
 ```
+Try an path diagraph
+
+```{r}
+library(DiagrammeR)
+DiagrammeR::grViz("
+digraph rmarkdown{
+PE(Rounded)
+PS
+EPS
+PE -> PE_1
+PE -> PE_2
+PE -> PE_3_15
+
+PS -> PS_1
+PS -> PS_2
+PS -> PS_3_15
+
+EPS -> EPS_1
+EPS -> EPS_2
+EPS -> EPS_3_15
+}
+", height = 200)
+
+mermaid("
+graph LR
+  A((node text))
+  A --> B
+")
+```
 
 
 

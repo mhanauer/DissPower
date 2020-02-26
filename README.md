@@ -107,7 +107,7 @@ As explained above, the covariance matrix can be separated into two parts: a vec
 ```{r}
 error.cor <- matrix(0, 45, 45)
 diag(error.cor) <- 1
-RTE <- binds(error.cor); RTE
+RTE <- binds(error.cor)
 ```
 Not set factor correlations
 The last matrix is the factor covariance matrix. Again, the factor covariance matrix can be separated into two parts: a vector of factor variances (or factor residual variances) and a matrix of factor correlation (or factor residual correlation). The default in this program is that the factor variances are constrained to be 1. All exogenous and endogenous factor variances are fixed parameters (i.e., fixed factor method of scale identification). Therefore, the only thing we need to specify is the factor correlation. For all correlation matrices, the diagonal elements are 1. In this model, we allow the only one element of factor correlation to be freely estimated and have the parameter/starting value of 0.5. Thus, latent correlation matrix is specified as:
@@ -117,6 +117,7 @@ diag(latent.cor) <- 1
 RPS <- binds(latent.cor, 0.2)
 RPS
 RPS@popParam[1:2,3] = ".5"
+RPS@popParam[2:3,1] = ".5"
 RPS
 
 ```
@@ -129,42 +130,23 @@ Simulation
 ```{r}
 dat <- generate(CFA.Model, 200)
 out <- analyze(CFA.Model, dat)
-Output_120 <- sim(100, n = 120, CFA.Model, multicore = TRUE, seed= 123)
-Output_130 <- sim(1000, n = 130, CFA.Model, multicore = TRUE, seed= 123)
-Output_140 <- sim(1000, n = 130, CFA.Model, multicore = TRUE, seed= 123)
-Output_150 <- sim(1000, n = 130, CFA.Model, multicore = TRUE, seed= 123)
-summary(Output)
+Output_test <- sim(10, n = 110, CFA.Model, multicore = TRUE, seed= 123)
+summary(Output_test)
+Output_100 <- sim(1000, n = 100, CFA.Model, multicore = TRUE, seed= 1234)
+Output_110 <- sim(1000, n = 110, CFA.Model, multicore = TRUE, seed= 1234)
+Output_120 <- sim(1000, n = 120, CFA.Model, multicore = TRUE, seed= 1234)
+Output_130 <- sim(1000, n = 130, CFA.Model, multicore = TRUE, seed= 1234)
+Output_140 <- sim(1000, n = 140, CFA.Model, multicore = TRUE, seed= 1234)
+getCutoff(Output_test, alpha = .8)
 ```
-Try an path diagraph
-
+Results
 ```{r}
-library(DiagrammeR)
-DiagrammeR::grViz("
-digraph rmarkdown{
-PE(Rounded)
-PS
-EPS
-PE -> PE_1
-PE -> PE_2
-PE -> PE_3_15
-
-PS -> PS_1
-PS -> PS_2
-PS -> PS_3_15
-
-EPS -> EPS_1
-EPS -> EPS_2
-EPS -> EPS_3_15
-}
-", height = 200)
-
-mermaid("
-graph LR
-  A((node text))
-  A --> B
-")
+summary(Output_120) 
+Output_130
+Output_140
+summary(Output_150)
+Output_test
 ```
-
 
 
 

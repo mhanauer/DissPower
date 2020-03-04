@@ -40,7 +40,7 @@ k = number of items; 15
 Za = Z-score associated with alternative hypothesis 1.96
 CA0 = null hypothesis of Cronbach's alpha; 0
 CA1 = alterantive hypothesis of Cronbach's Alpha; .8
-$$ n = (({2k/(k-1))(Z_{a}/2+Z{b})^2}) / ln(\theta)^2)+2~~~ (1)$$
+$$ n = ({2k/(k-1)(Z_{a/2}+Z{b})^2} / ln(\theta)^2)+2~~~ (1)$$
 
 
 

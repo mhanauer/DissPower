@@ -80,33 +80,25 @@ See example: https://github.com/simsem/simsem/wiki/Example-1:-Getting-Started
 I have three constructs with 15 items each.  I am assuming standardized .7 factor loadings for each item on each construct.
 ```{r}
 library(simsem)
-loading <- matrix(0, 15*3, 3)
-loading[1:15, 1] <- NA
-loading[16:30, 2] <- NA
-loading[31:45, 3] <- NA; loading
-loading.start <- matrix("", 45, 3)
-loading.start[1:15, 1] <- 0.7
-loading.start[16:30, 2] <- 0.7
-loading.start[31:45, 3] <- 0.7
+loading <- matrix(0, 30, 1)
+loading[1:30, 1] <- NA
+loading.start <- matrix("", 30, 1)
+loading.start[1:30, 1] <- 0.7
 LY <- bind(loading, loading.start); LY
 LY
 ```
 
 Assuming no correlation between errors and a variance of 1.
 ```{r}
-error.cor <- matrix(0, 45, 45)
+error.cor <- matrix(0, 30, 30)
 diag(error.cor) <- 1
 RTE <- binds(error.cor)
 ```
 
 Setting correlation between program evaluation and program sustainability with evaluation of program sustainability to .5 and correlation beteween program evaluation and program sustainability to .2.  
 ```{r}
-latent.cor <- matrix(NA, 3, 3)
+latent.cor <- matrix(NA, 1, 1)
 diag(latent.cor) <- 1
-RPS <- binds(latent.cor, 0.2)
-RPS
-RPS@popParam[1:2,3] = ".5"
-RPS@popParam[2:3,1] = ".5"
 RPS
 
 ```
@@ -119,23 +111,15 @@ Simulation
 ```{r}
 dat <- generate(CFA.Model, 200)
 out <- analyze(CFA.Model, dat)
-#Output_test <- sim(100, n = 160, CFA.Model, multicore = TRUE, seed= 123)
-#summary(Output_test)
 Output_100 <- sim(1000, n = 100, CFA.Model, multicore = TRUE, seed= 1234)
 Output_110 <- sim(1000, n = 110, CFA.Model, multicore = TRUE, seed= 1234)
 Output_120 <- sim(1000, n = 120, CFA.Model, multicore = TRUE, seed= 1234)
 Output_130 <- sim(1000, n = 130, CFA.Model, multicore = TRUE, seed= 1234)
-Output_140 <- sim(1000, n = 140, CFA.Model, multicore = TRUE, seed= 1234)
-Output_150 <- sim(1000, n = 150, CFA.Model, multicore = TRUE, seed= 1234)
-Output_160 <- sim(1000, n = 160, CFA.Model, multicore = TRUE, seed= 1234)
-Output_170 <- sim(1000, n = 170, CFA.Model, multicore = TRUE, seed= 1234)
-Output_180 <- sim(1000, n = 180, CFA.Model, multicore = TRUE, seed= 1234)
-
 ```
 Power using criteria in Kline and stated in dissertation
 ```{r}
 
-power_dat_list = list(Output_100@fit, Output_110@fit, Output_120@fit, Output_130@fit, Output_140@fit, Output_150@fit, Output_160@fit, Output_170@fit)
+power_dat_list = list(Output_100@fit, Output_110@fit, Output_120@fit, Output_130@fit)
 power_results = list()
 test_power = list()
 chi_square_power = list()
@@ -162,5 +146,6 @@ colnames(results_power) = c("chi_square", "rmsea", "cfi", "tli", "srmr")
 n = seq(from= 100, to = 170, by = 10)
 results_power = data.frame(n, results_power)
 results_power = round(results_power, 2)
+results_power
 write.csv(results_power, "results_power.csv", row.names = FALSE)
 ```

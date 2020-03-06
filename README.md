@@ -95,7 +95,7 @@ diag(error.cor) <- 1
 RTE <- binds(error.cor)
 ```
 
-Setting correlation between program evaluation and program sustainability with evaluation of program sustainability to .5 and correlation beteween program evaluation and program sustainability to .2.  
+Assuming variance one 1 
 ```{r}
 latent.cor <- matrix(NA, 1, 1)
 diag(latent.cor) <- 1
@@ -140,10 +140,10 @@ for(i in 1:length(power_dat_list)){
   results_power[[i]] = data.frame(chi_square_power[[i]], rmsea_power[[i]], cfi_power[[i]],  tli_power[[i]], srmr_power[[i]]) 
 }
 results_power = unlist(results_power)
-results_power = matrix(results_power, ncol = 5, nrow = 8, byrow = TRUE)  
+results_power = matrix(results_power, ncol = 5, nrow = 4, byrow = TRUE)  
 results_power = data.frame(results_power)
 colnames(results_power) = c("chi_square", "rmsea", "cfi", "tli", "srmr")
-n = seq(from= 100, to = 170, by = 10)
+n = seq(from= 100, to = 130, by = 10)
 results_power = data.frame(n, results_power)
 results_power = round(results_power, 2)
 results_power

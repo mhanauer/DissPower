@@ -45,8 +45,6 @@ $$ n = ({2k/(k-1)(Z_{a/2}+Z{b})^2} / ln(\theta)^2)+2~~~ (1)$$
 
 
 $$ \theta = (1-CA_{0}) /(1-CA_{1})~~ (2)  $$
-
-
 Power analysis to confirm formula is right getting same number as Bujang et al. (2018)
 ```{r}
 a = .05
@@ -75,21 +73,6 @@ denom = log(theta)^2
 n = round((num /denom)+2,0)
 n
 ```
-New power for percision of estimate using Bonnnet (2002)
-e1 = is the difference in lowest and highest standards for Cronbach Alpha
-To get an alpha of .8 with level of percision 
-$$ \epsilon_{1} = (1-LL) /(1-UL)~~ (2)  $$
-$$ n=[8k/(k-1)][Z_{a/2}/ln(\epsilon_{1})]^2+2  $$
-
-```{r}
-k 
-
-
-```
-
-
-
-
 
 
 

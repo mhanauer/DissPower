@@ -65,16 +65,35 @@ Power analysis in r with .8 cronbach and .8 power
 ```{r}
 a = .05
 b = .2
-k = 10
+k = 30
 Za = 1.96
 Zb = abs(qnorm(p = .2))
-theta = (1-0)/(1-.8)
+theta = (1-.70)/(1-.80)
 #qnorm(p = .2)
 num = (2*k)/(k-1)*(Za+Zb)^2
 denom = log(theta)^2
 n = round((num /denom)+2,0)
 n
 ```
+New power for percision of estimate using Bonnnet (2002)
+e1 = is the difference in lowest and highest standards for Cronbach Alpha
+To get an alpha of .8 with level of percision 
+$$ \epsilon_{1} = (1-LL) /(1-UL)~~ (2)  $$
+$$ n=[8k/(k-1)][Z_{a/2}/ln(\epsilon_{1})]^2+2  $$
+
+```{r}
+k 
+
+
+```
+
+
+
+
+
+
+
+
 See example: https://github.com/simsem/simsem/wiki/Example-1:-Getting-Started
 
 I have three constructs with 15 items each.  I am assuming standardized .7 factor loadings for each item on each construct.

@@ -6,22 +6,17 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-Power for potential attitudes
-Research shows .5 to .2 Cohen's D change Steinmetz et al. (2016)
-
-Results show that at best I need 26 participants, which could be difficult to recruit and manage in an online training.  Additionally, conservatively I would need 155 which is likely not feasible.
-```{r}
-library(pwr)
-## Attidues
-pwr.t.test(n = 26, d = .5, type = "paired", alternative = "greater")
-pwr.t.test(n = 155, d = .2, type = "paired", alternative = "greater")
-```
 Power for congitive knowledge and skills with normal and non-normal data
 ```{r}
 ## Knowledge
-pwr.t.test(n = 11, d = .8, type = "paired", alternative = "greater")
-pwr.t.test(n = 10, d = .9, type = "paired", alternative = "greater")
 pwr.t.test(n = 8, d = 1, type = "paired", alternative = "greater")
+pwr.t.test(n = 10, d = .9, type = "paired", alternative = "greater")
+pwr.t.test(n = 11, d = .8, type = "paired", alternative = "greater")
+pwr.t.test(n = 14, d = .7, type = "paired", alternative = "greater")
+pwr.t.test(n = 19, d = .6, type = "paired", alternative = "greater")
+pwr.t.test(n = 26, d = .5, type = "paired", alternative = "greater")
+
+
 
 ### Knowledge not normal
 library(wmwpow)

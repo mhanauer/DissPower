@@ -19,11 +19,15 @@ pwr.t.test(n = 26, d = .5, type = "paired", alternative = "greater")
 
 
 ### Knowledge not normal
+#1 effect size
+#(.80-.40)/.4
 library(wmwpow)
-wmwpowd(n = 8, m = 8, distn = "norm(.80,.3)", distm = "norm(.30,.3)", sides = "greater",
+wmwpowd(n = 12, m = 12, distn = "norm(.80,.3)", distm = "norm(.40,.4)", sides = "greater",
 alpha = 0.05, nsims=10000)
+#(.8-.44)/.4
 wmwpowd(n = 10, m = 10, distn = "norm(.80,.3)", distm = "norm(.35,.3)", sides = "greater",
 alpha = 0.05, nsims=10000)
+
 wmwpowd(n = 11, m = 11, distn = "norm(.80,.3)", distm = "norm(.40,.3)", sides = "greater",
 alpha = 0.05, nsims=10000)
 ```

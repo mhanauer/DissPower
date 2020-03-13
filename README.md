@@ -14,7 +14,6 @@ pwr.t.test(n = 10, d = .9, type = "paired", alternative = "greater")
 pwr.t.test(n = 11, d = .8, type = "paired", alternative = "greater")
 pwr.t.test(n = 14, d = .7, type = "paired", alternative = "greater")
 pwr.t.test(n = 19, d = .6, type = "paired", alternative = "greater")
-pwr.t.test(n = 26, d = .5, type = "paired", alternative = "greater")
 
 
 
@@ -22,14 +21,26 @@ pwr.t.test(n = 26, d = .5, type = "paired", alternative = "greater")
 #1 effect size
 #(.80-.40)/.4
 library(wmwpow)
-wmwpowd(n = 12, m = 12, distn = "norm(.80,.3)", distm = "norm(.40,.4)", sides = "greater",
-alpha = 0.05, nsims=10000)
-#(.8-.44)/.4
-wmwpowd(n = 10, m = 10, distn = "norm(.80,.3)", distm = "norm(.35,.3)", sides = "greater",
+(.9-.50)/.4
+wmwpowd(n = 11, m = 11, distn = "norm(.90,.3)", distm = "norm(.50,.4)", sides = "greater",
 alpha = 0.05, nsims=10000)
 
-wmwpowd(n = 11, m = 11, distn = "norm(.80,.3)", distm = "norm(.40,.3)", sides = "greater",
+(.9-.54)/.4
+wmwpowd(n = 18, m = 18, distn = "norm(.90,.4)", distm = "norm(.54,.4)", sides = "greater",
 alpha = 0.05, nsims=10000)
+
+(.9-.58)/.4
+wmwpowd(n = 21, m = 21, distn = "norm(.90,.4)", distm = "norm(.58,.4)", sides = "greater",
+alpha = 0.05, nsims=10000)
+
+(.9-.62)/.4
+wmwpowd(n = 27, m = 27, distn = "norm(.90,.4)", distm = "norm(.62,.4)", sides = "greater",
+alpha = 0.05, nsims=10000)
+
+(.9-.66)/.4
+wmwpowd(n = 37, m = 37, distn = "norm(.90,.4)", distm = "norm(.66,.4)", sides = "greater",
+alpha = 0.05, nsims=10000)
+
 ```
 
 Power for Cronbach Alpha based on Bujang et al. (2018)
@@ -73,25 +84,52 @@ n = round((num /denom)+2,0)
 n
 ```
 
+Try to replicate the example in Bonnett (2002)
 
+$$ n_{0} = [8k/(k-1)][Z_{a/2}/ln(e_{1})]^2+2~~ (1)  $$
+$$ e_{1} = (1-LL)/(1-UL)~~(2) $$
+
+Replication of Bonnett (2002)
+```{r}
+k = 4
+Za = 1.96
+#e1 = (1-.7)/(1-.9)
+e1 = 2
+n1_first = (8*k)/(k-1)
+n1_second = (Za/log(e1))^2
+n1 = (n1_first*n1_second)+2
+n1
+
+```
+Now my study with percision of .7 .9
+```{r}
+k = 30
+Za = 1.96
+e1 = (1-.7)/(1-.9)
+e1 = 2
+n1_first = (8*k)/(k-1)
+n1_second = (Za/log(e1))^2
+n1 = (n1_first*n1_second)+2
+n1
+```
 
 
 See example: https://github.com/simsem/simsem/wiki/Example-1:-Getting-Started
 
-I have three constructs with 15 items each.  I am assuming standardized .7 factor loadings for each item on each construct.
+I have one construct with 30 items.  I am assuming standardized .7 factor loadings for each item on each construct.
 ```{r}
 library(simsem)
-loading <- matrix(0, 30, 1)
-loading[1:30, 1] <- NA
-loading.start <- matrix("", 30, 1)
-loading.start[1:30, 1] <- 0.7
+loading <- matrix(0, 20, 1)
+loading[1:20, 1] <- NA
+loading.start <- matrix("", 20, 1)
+loading.start[1:20, 1] <- 0.7
 LY <- bind(loading, loading.start); LY
 LY
 ```
 
 Assuming no correlation between errors and a variance of 1.
 ```{r}
-error.cor <- matrix(0, 30, 30)
+error.cor <- matrix(0, 20, 20)
 diag(error.cor) <- 1
 RTE <- binds(error.cor)
 ```
@@ -100,8 +138,8 @@ Assuming variance one 1
 ```{r}
 latent.cor <- matrix(NA, 1, 1)
 diag(latent.cor) <- 1
-RPS
-
+factor.cor <- diag(1)
+RPS <- binds(factor.cor, 0.0); RPS
 ```
 Put together the CFA model
 ```{r}
@@ -112,10 +150,12 @@ Simulation
 ```{r}
 dat <- generate(CFA.Model, 200)
 out <- analyze(CFA.Model, dat)
-Output_100 <- sim(1000, n = 100, CFA.Model, multicore = TRUE, seed= 1234)
-Output_110 <- sim(1000, n = 110, CFA.Model, multicore = TRUE, seed= 1234)
-Output_120 <- sim(1000, n = 120, CFA.Model, multicore = TRUE, seed= 1234)
-Output_130 <- sim(1000, n = 130, CFA.Model, multicore = TRUE, seed= 1234)
+
+
+Output_100 <- sim(100, n = 100, CFA.Model, multicore = TRUE, seed= 1234)
+Output_110 <- sim(100, n = 110, CFA.Model, multicore = TRUE, seed= 1234)
+Output_120 <- sim(100, n = 120, CFA.Model, multicore = TRUE, seed= 1234)
+Output_130 <- sim(100, n = 130, CFA.Model, multicore = TRUE, seed= 1234)
 ```
 Power using criteria in Kline and stated in dissertation
 ```{r}

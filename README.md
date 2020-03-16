@@ -103,7 +103,7 @@ n1
 ```
 Now my study with percision of .7 .9
 ```{r}
-k = 30
+k = 25
 Za = 1.96
 e1 = (1-.7)/(1-.9)
 e1 = 2
@@ -152,10 +152,10 @@ dat <- generate(CFA.Model, 200)
 out <- analyze(CFA.Model, dat)
 
 
-Output_80 <- sim(1000, n = 80, CFA.Model, multicore = TRUE, seed= 1234)
-Output_90 <- sim(1000, n = 90, CFA.Model, multicore = TRUE, seed= 1234)
-Output_100 <- sim(1000, n = 100, CFA.Model, multicore = TRUE, seed= 1234)
-Output_110 <- sim(1000, n = 110, CFA.Model, multicore = TRUE, seed= 1234)
+Output_80 <- sim(10000, n = 80, CFA.Model, multicore = TRUE, seed= 1234)
+Output_90 <- sim(10000, n = 90, CFA.Model, multicore = TRUE, seed= 1234)
+Output_100 <- sim(10000, n = 100, CFA.Model, multicore = TRUE, seed= 1234)
+Output_110 <- sim(10000, n = 110, CFA.Model, multicore = TRUE, seed= 1234)
 ```
 Power using criteria in Kline and stated in dissertation
 ```{r}

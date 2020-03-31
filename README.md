@@ -119,17 +119,17 @@ See example: https://github.com/simsem/simsem/wiki/Example-1:-Getting-Started
 I have one construct with 30 items.  I am assuming standardized .7 factor loadings for each item on each construct.
 ```{r}
 library(simsem)
-loading <- matrix(0, 25, 1)
-loading[1:25, 1] <- NA
-loading.start <- matrix("", 25, 1)
-loading.start[1:25, 1] <- 0.7
+loading <- matrix(0, 3, 1)
+loading[1:3, 1] <- NA
+loading.start <- matrix("", 3, 1)
+loading.start[1:3, 1] <- 0.7
 LY <- bind(loading, loading.start); LY
 LY
 ```
 
 Assuming no correlation between errors and a variance of 1.
 ```{r}
-error.cor <- matrix(0, 25, 25)
+error.cor <- matrix(0, 3, 3)
 diag(error.cor) <- 1
 RTE <- binds(error.cor)
 ```
@@ -151,7 +151,13 @@ Simulation
 ```{r}
 dat <- generate(CFA.Model, 200)
 
-out <- analyze(CFA.Model, dat)
+prob <- exp(dat)/(1 + exp(dat))
+runis <- runif(length(dat),0,1)
+dat_test = ifelse(runis < prob,1,0)
+dat_bin
+test_model = 'knoweldge =~ y1 + y2 + y3'
+fit_test = cfa(test_model, data = dat_test, ordered = c("y1", "y2", "y3"))
+summary(fit_test, fit.measures=TRUE, standardized=TRUE)
 
 Output_test <- sim(generate = CFA.Model, rawData =  dat, multicore = TRUE, seed= 1234)
 
@@ -325,6 +331,14 @@ faPC <- fa(r=pc, nfactors=2, n.obs=N, rotate="varimax")
 faPC$loadings
 
 
+```
+Can it work?
+https://psu-psychology.github.io/r-bootcamp-2019/talks/lavaan_tutorial.html#modeling-categorical-data-with-a-formal-threshold-structure
+```{r}
+library(lavaan)
+model <- ' mental ˜ ses + life '
+fit <- sem(model, data=table.7.5)
+summary(fit)
 ```
 
 

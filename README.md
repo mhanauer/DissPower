@@ -145,11 +145,15 @@ Put together the CFA model
 ```{r}
 CFA.Model <- model(LY = LY, RPS = RPS, RTE = RTE, modelType="CFA")
 summary(CFA.Model)
+CFA.Model
 ```
 Simulation
 ```{r}
 dat <- generate(CFA.Model, 200)
+
 out <- analyze(CFA.Model, dat)
+
+Output_test <- sim(generate = CFA.Model, rawData =  dat, multicore = TRUE, seed= 1234)
 
 
 Output_80 <- sim(10000, n = 80, CFA.Model, multicore = TRUE, seed= 1234)
@@ -190,3 +194,137 @@ results_power = round(results_power, 2)
 results_power
 write.csv(results_power, "results_power.csv", row.names = FALSE)
 ```
+Try simluating binary items and then run CFA
+```{r}
+beta = .78
+# So this is how you get the random variation
+xtest <- rnorm(n)
+linpred <-  (xtest * beta)
+prob <- exp(linpred)/(1 + exp(linpred))
+runis <- runif(length(xtest),0,1)
+y1 <- ifelse(runis < prob,1,0)
+
+
+# So this is how you get the random variation
+xtest <- rnorm(n)
+linpred <-  (xtest * beta)
+prob <- exp(linpred)/(1 + exp(linpred))
+runis <- runif(length(xtest),0,1)
+y2 = ifelse(runis < prob,1,0)
+
+
+# So this is how you get the random variation
+xtest <- rnorm(n)
+linpred <-  (xtest * beta)
+prob <- exp(linpred)/(1 + exp(linpred))
+runis <- runif(length(xtest),0,1)
+y3 = ifelse(runis < prob,1,0)
+
+dat_test = data.frame(y1,y2,y3)
+dat_test
+
+```
+Create model
+```{r}
+dat_test[,c("y1","y2","y3")] <- lapply(dat_test[,c("y1","y2","y3")], ordered)
+dat_test
+test_model = 'knoweldge =~ y1 + y2 + y3'
+fit_test = cfa(test_model, data = dat_test)
+summary(fit_test, fit.measures=TRUE)
+```
+Test
+```{r}
+sim.mod <- "
+f1 =~ 1*y1 + 1*y2 + 1*y3+ 1*y4 + 1*y5
+f1 ~ 0*x1 + 0*x2 + 0*x3 + 0*x4 + 0*x5 + 0.2*x6 + 0.5*x7 + 0.8*x8
+f1~~1*f1"
+dat.sim = simulateData(sim.mod,sample.nobs=100,seed=12)
+
+```
+Try http://dwoll.de/rexrepos/posts/multFApoly.html
+```{r}
+set.seed(123)
+N <- 200                       # number of observations
+P <- 6                         # number of variables
+Q <- 2                         # number of factors
+
+# true P x Q loading matrix -> variable-factor correlations
+Lambda <- matrix(c(0.7,-0.4, 0.8,0, -0.2,0.9, -0.3,0.4, 0.3,0.7, -0.8,0.1),nrow=P, ncol=Q, byrow=TRUE)
+
+library(mvtnorm)               # for rmvnorm()
+FF <- rmvnorm(N, mean=c(5, 15), sigma=diag(Q))
+
+# matrix with iid, mean 0, normal errors
+E   <- rmvnorm(N, rep(0, P), diag(P))
+X   <- FF %*% t(Lambda) + E    # matrix with variable values
+dfX <- data.frame(X)           # data also as a data frame
+dfX
+## Turn these into probabilities
+prob <- exp(dfX)/(1 + exp(dfX))
+runis <- runif(length(xtest),0,1)
+bin_dat = ifelse(runis < prob,1,0)
+apply(bin_dat, 2, function(x){describe.factor(bin_dat)})
+
+bin_dat_frame  <- data.frame(bin_dat)     # combine list into a data frame
+bin_dat_matrix <- data.matrix(bin_dat)   # categorized data as a numeric matrix
+ordNum
+
+
+
+library(polycor)               # for hetcor()
+pc <- cor(bin_dat_frame)   # polychoric corr matrix
+pc
+```
+Test; http://dwoll.de/rexrepos/posts/multFApoly.html
+```{r}
+dat_test = sim.dichot(nvar = 72, nsub = 500, circum = FALSE, xloading = 0.6, yloading = 0.6, 
+    gloading = 0, xbias = 0, ybias = 0, low = 0, high = 0) 
+dat_test = data.frame(dat_test[,1:3])
+dat_test[,c("X1","X2","X3")] <- lapply(dat_test[,c("X1","X2","X3")], ordered)
+dat_test
+dat_test = data.frame(dat_test)
+head(dat_test)
+test_model = 'knoweldge =~ X1 + X2 + X3'
+fit_test = cfa(test_model, data = dat_test)
+summary(fit_test, fit.measures=TRUE)
+```
+Actual example from website
+```{r}
+
+set.seed(123)
+N <- 200                       # number of observations
+P <- 6                         # number of variables
+Q <- 2                         # number of factors
+
+# true P x Q loading matrix -> variable-factor correlations
+Lambda <- matrix(c(0.7,-0.4, 0.8,0, -0.2,0.9, -0.3,0.4, 0.3,0.7, -0.8,0.1),
+                 nrow=P, ncol=Q, byrow=TRUE)
+
+
+# factor scores (uncorrelated factors)
+library(mvtnorm)               # for rmvnorm()
+FF <- rmvnorm(N, mean=c(5, 15), sigma=diag(Q))
+
+# matrix with iid, mean 0, normal errors
+E   <- rmvnorm(N, rep(0, P), diag(P))
+X   <- FF %*% t(Lambda) + E    # matrix with variable values
+dfX <- data.frame(X)           # data also as a data frame
+quantile(dfX$X1, .5)
+lOrd <- lapply(dfX, function(x) {
+               cut(x, breaks=quantile(x), include.lowest=TRUE,
+                   ordered=TRUE, labels=LETTERS[1:4]) })
+lOrd = data.frame(lOrd)
+lOrd = apply(lOrd, 2, function(x){ifelse(x == "A", 0, ifelse(x == "B", 0,1))})
+
+dfOrd  <- data.frame(lOrd)     # combine list into a data frame
+ordNum <- data.matrix(dfOrd)   # categorized data as a numeric matrix
+library(polycor)               # for hetcor()
+pc =  cor(dfOrd)
+pc <- hetcor(dfOrd, ML=TRUE)   # polychoric corr matrix
+faPC <- fa(r=pc, nfactors=2, n.obs=N, rotate="varimax")
+faPC$loadings
+
+
+```
+
+

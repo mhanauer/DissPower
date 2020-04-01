@@ -294,7 +294,7 @@ test_model = 'knoweldge =~ X1 + X2 + X3'
 fit_test = cfa(test_model, data = dat_test)
 summary(fit_test, fit.measures=TRUE)
 ```
-Actual example from website
+Actual example from website: http://dwoll.de/rexrepos/posts/multFApoly.html
 ```{r}
 
 set.seed(123)
@@ -306,7 +306,7 @@ Q <- 2                         # number of factors
 Lambda <- matrix(c(0.7,-0.4, 0.8,0, -0.2,0.9, -0.3,0.4, 0.3,0.7, -0.8,0.1),
                  nrow=P, ncol=Q, byrow=TRUE)
 
-
+Lambda
 # factor scores (uncorrelated factors)
 library(mvtnorm)               # for rmvnorm()
 FF <- rmvnorm(N, mean=c(5, 15), sigma=diag(Q))
@@ -325,13 +325,16 @@ lOrd = apply(lOrd, 2, function(x){ifelse(x == "A", 0, ifelse(x == "B", 0,1))})
 dfOrd  <- data.frame(lOrd)     # combine list into a data frame
 ordNum <- data.matrix(dfOrd)   # categorized data as a numeric matrix
 library(polycor)               # for hetcor()
-pc =  cor(dfOrd)
 pc <- hetcor(dfOrd, ML=TRUE)   # polychoric corr matrix
-faPC <- fa(r=pc, nfactors=2, n.obs=N, rotate="varimax")
+faPC <- fa(r=pc$correlations, nfactors=2, n.obs=N, rotate="varimax")
 faPC$loadings
-
+faPC
 
 ```
+Try this website: https://stats.idre.ucla.edu/r/seminars/rcfa/
+
+
+
 Can it work?
 https://psu-psychology.github.io/r-bootcamp-2019/talks/lavaan_tutorial.html#modeling-categorical-data-with-a-formal-threshold-structure
 ```{r}

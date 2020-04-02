@@ -326,22 +326,92 @@ dfOrd  <- data.frame(lOrd)     # combine list into a data frame
 ordNum <- data.matrix(dfOrd)   # categorized data as a numeric matrix
 library(polycor)               # for hetcor()
 pc <- hetcor(dfOrd, ML=TRUE)   # polychoric corr matrix
-faPC <- fa(r=pc$correlations, nfactors=2, n.obs=N, rotate="varimax")
+faPC <- fa(r=pc$correlations, nfactors=2, n.obs=N, rotate="none")
 faPC$loadings
 faPC
 
 ```
-Try this website: https://stats.idre.ucla.edu/r/seminars/rcfa/
-
-
-
-Can it work?
-https://psu-psychology.github.io/r-bootcamp-2019/talks/lavaan_tutorial.html#modeling-categorical-data-with-a-formal-threshold-structure
+Try simdoct
 ```{r}
-library(lavaan)
-model <- ' mental ˜ ses + life '
-fit <- sem(model, data=table.7.5)
-summary(fit)
-```
+x_con <- sim.item(20,gloading=.6, nsub = 100)
+head(x_con)
+f_con <- fa(x_con,1,rotate="none")
+f_con
+summary(f3)
 
+y_dicot = item.dichot(nvar = 20, nsub = 200,gloading = .7) 
+fy <- fa(y_dicot,1,rotate="none")
+fy
+summary(f3)
+
+x_dicot =  sim.dichot(nvar = 20, nsub = 90, gloading = .7) 
+head(x_dicot)
+f3 <- fa(x_dicot,1,rotate="none")
+f3$Vaccounted
+summary(f3)
+
+
+dat_test = data.frame(x_dicot)
+dat_test <- lapply(dat_test, ordered)
+dat_test = data.frame(dat_test)
+head(dat_test)
+test_model = 'knoweldge =~ X1 + X2 + X3 + X4 + X5'
+fit_test = cfa(test_model, data = dat_test)
+summary(fit_test, fit.measures=TRUE)
+
+
+```
+This is the example that works: https://www.rdocumentation.org/packages/psych/versions/1.9.12.31/topics/sim.VSS
+https://www.rdocumentation.org/packages/psych/versions/1.9.12.31/topics/fa
+
+```{r}
+dat_vss = sim.VSS(ncases=500, nvariables=10, nfactors=1, meanloading=.7,dichot=TRUE,cut=0)
+
+head(dat_vss)
+
+## Yes error, but almost identical to 
+corr_matrix = tetrachoric(dat_vss)
+## Same scale as SMSR
+fa_vss = fa(dat_vss, 1, rotate="varimax", cor = "tet")
+summary(fa_vss)
+
+fa_vss$fit
+fa_vss$crms
+vss_results =  vss(dat_vss)
+vss_results
+sim.VSS
+### doesn't work with 500 people
+fa.parallel(dat_vss, cor = "tet")
+700*5*1.2
+
+
+fa_replication  = fa(dat_vss, 1, rotate="varimax", cor = "tet", n.iter
+ = 10)
+fa_replication$loadings
+
+```
+Check this out
+```{r}
+
+alpha <- 0.05 #alpha level
+d <- 80 #degrees of freedom
+n <- 100 #sample size
+rmsea0 <- 0.1 #null hypothesized RMSEA
+rmseaa <- 0.05 #alternative hypothesized RMSEA
+
+#Code below this point need not be changed by user
+ncp0 <- (n-1)*d*rmsea0^2
+ncpa <- (n-1)*d*rmseaa^2
+
+#Compute power
+if(rmsea0<rmseaa) {
+    cval <- qchisq(alpha,d,ncp=ncp0,lower.tail=F)
+    pow <- pchisq(cval,d,ncp=ncpa,lower.tail=F)
+}
+if(rmsea0>rmseaa) {
+    cval <- qchisq(1-alpha,d,ncp=ncp0,lower.tail=F)
+    pow <- 1-pchisq(cval,d,ncp=ncpa,lower.tail=F)
+}
+print(pow)
+```
 

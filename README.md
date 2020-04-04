@@ -200,100 +200,10 @@ results_power = round(results_power, 2)
 results_power
 write.csv(results_power, "results_power.csv", row.names = FALSE)
 ```
-Try simluating binary items and then run CFA
-```{r}
-beta = .78
-# So this is how you get the random variation
-xtest <- rnorm(n)
-linpred <-  (xtest * beta)
-prob <- exp(linpred)/(1 + exp(linpred))
-runis <- runif(length(xtest),0,1)
-y1 <- ifelse(runis < prob,1,0)
-
-
-# So this is how you get the random variation
-xtest <- rnorm(n)
-linpred <-  (xtest * beta)
-prob <- exp(linpred)/(1 + exp(linpred))
-runis <- runif(length(xtest),0,1)
-y2 = ifelse(runis < prob,1,0)
-
-
-# So this is how you get the random variation
-xtest <- rnorm(n)
-linpred <-  (xtest * beta)
-prob <- exp(linpred)/(1 + exp(linpred))
-runis <- runif(length(xtest),0,1)
-y3 = ifelse(runis < prob,1,0)
-
-dat_test = data.frame(y1,y2,y3)
-dat_test
-
-```
-Create model
-```{r}
-dat_test[,c("y1","y2","y3")] <- lapply(dat_test[,c("y1","y2","y3")], ordered)
-dat_test
-test_model = 'knoweldge =~ y1 + y2 + y3'
-fit_test = cfa(test_model, data = dat_test)
-summary(fit_test, fit.measures=TRUE)
-```
-Test
-```{r}
-sim.mod <- "
-f1 =~ 1*y1 + 1*y2 + 1*y3+ 1*y4 + 1*y5
-f1 ~ 0*x1 + 0*x2 + 0*x3 + 0*x4 + 0*x5 + 0.2*x6 + 0.5*x7 + 0.8*x8
-f1~~1*f1"
-dat.sim = simulateData(sim.mod,sample.nobs=100,seed=12)
-
-```
-Try http://dwoll.de/rexrepos/posts/multFApoly.html
-```{r}
-set.seed(123)
-N <- 200                       # number of observations
-P <- 6                         # number of variables
-Q <- 2                         # number of factors
-
-# true P x Q loading matrix -> variable-factor correlations
-Lambda <- matrix(c(0.7,-0.4, 0.8,0, -0.2,0.9, -0.3,0.4, 0.3,0.7, -0.8,0.1),nrow=P, ncol=Q, byrow=TRUE)
-
-library(mvtnorm)               # for rmvnorm()
-FF <- rmvnorm(N, mean=c(5, 15), sigma=diag(Q))
-
-# matrix with iid, mean 0, normal errors
-E   <- rmvnorm(N, rep(0, P), diag(P))
-X   <- FF %*% t(Lambda) + E    # matrix with variable values
-dfX <- data.frame(X)           # data also as a data frame
-dfX
-## Turn these into probabilities
-prob <- exp(dfX)/(1 + exp(dfX))
-runis <- runif(length(xtest),0,1)
-bin_dat = ifelse(runis < prob,1,0)
-apply(bin_dat, 2, function(x){describe.factor(bin_dat)})
-
-bin_dat_frame  <- data.frame(bin_dat)     # combine list into a data frame
-bin_dat_matrix <- data.matrix(bin_dat)   # categorized data as a numeric matrix
-ordNum
 
 
 
-library(polycor)               # for hetcor()
-pc <- cor(bin_dat_frame)   # polychoric corr matrix
-pc
-```
-Test; http://dwoll.de/rexrepos/posts/multFApoly.html
-```{r}
-dat_test = sim.dichot(nvar = 72, nsub = 500, circum = FALSE, xloading = 0.6, yloading = 0.6, 
-    gloading = 0, xbias = 0, ybias = 0, low = 0, high = 0) 
-dat_test = data.frame(dat_test[,1:3])
-dat_test[,c("X1","X2","X3")] <- lapply(dat_test[,c("X1","X2","X3")], ordered)
-dat_test
-dat_test = data.frame(dat_test)
-head(dat_test)
-test_model = 'knoweldge =~ X1 + X2 + X3'
-fit_test = cfa(test_model, data = dat_test)
-summary(fit_test, fit.measures=TRUE)
-```
+
 Actual example from website: http://dwoll.de/rexrepos/posts/multFApoly.html
 ```{r}
 
@@ -331,71 +241,60 @@ faPC$loadings
 faPC
 
 ```
-Try simdoct
-```{r}
-x_con <- sim.item(20,gloading=.6, nsub = 100)
-head(x_con)
-f_con <- fa(x_con,1,rotate="none")
-f_con
-summary(f3)
 
-y_dicot = item.dichot(nvar = 20, nsub = 200,gloading = .7) 
-fy <- fa(y_dicot,1,rotate="none")
-fy
-summary(f3)
-
-x_dicot =  sim.dichot(nvar = 20, nsub = 90, gloading = .7) 
-head(x_dicot)
-f3 <- fa(x_dicot,1,rotate="none")
-f3$Vaccounted
-summary(f3)
-
-
-dat_test = data.frame(x_dicot)
-dat_test <- lapply(dat_test, ordered)
-dat_test = data.frame(dat_test)
-head(dat_test)
-test_model = 'knoweldge =~ X1 + X2 + X3 + X4 + X5'
-fit_test = cfa(test_model, data = dat_test)
-summary(fit_test, fit.measures=TRUE)
-
-
-```
 This is the example that works: https://www.rdocumentation.org/packages/psych/versions/1.9.12.31/topics/sim.VSS
 https://www.rdocumentation.org/packages/psych/versions/1.9.12.31/topics/fa
-
+This replicates the factor loadings
 ```{r}
 dat_vss = sim.VSS(ncases=500, nvariables=10, nfactors=1, meanloading=.7,dichot=TRUE,cut=0)
-
-head(dat_vss)
-
-## Yes error, but almost identical to 
-corr_matrix = tetrachoric(dat_vss)
-## Same scale as SMSR
-fa_vss = fa(dat_vss, 1, rotate="varimax", cor = "tet")
-summary(fa_vss)
-
-fa_vss$fit
-fa_vss$crms
-vss_results =  vss(dat_vss)
-vss_results
-sim.VSS
-### doesn't work with 500 people
-fa.parallel(dat_vss, cor = "tet")
-700*5*1.2
-
-
-fa_replication  = fa(dat_vss, 1, rotate="varimax", cor = "tet", n.iter
- = 10)
+fa_replication  = fa(dat_vss, 1, rotate="varimax", cor = "tet")
 fa_replication$loadings
+```
+Ok create simulation
+```{r}
+efa_power= function(){
+
+n_sample = c(200,400, 600)
+tli_out = list()
+rmsea_lower = list()
+chi_squre_p = list()
+dat_vss = list()
+dat_out = list()
+for(i in 1:length(n_sample)){
+dat_vss[[i]] = sim.VSS(ncases=n_sample[[i]], nvariables=10, nfactors=1, meanloading=.7,dichot=TRUE,cut=0)
+fa_vss[[i]] = fa(dat_vss[[i]], 1, rotate="varimax", cor = "tet")
+tli_out[[i]] = fa_vss[[i]]$TLI
+rmsea_lower[[i]] = fa_vss[[i]]$RMSEA[2]
+chi_squre_p[[i]] = fa_vss[[i]]$PVAL 
+dat_out[[i]] = list(tli_out = tli_out[[i]], rmsea_lower = rmsea_lower[[i]], chi_squre_p = chi_squre_p[[i]])
+}
+return(dat_out)
+}
+### grab each of them sum them then divide by respective n's
+reps = 2
+power_efa = replicate(n = reps, efa_power(), simplify = FALSE)
+power_efa
+
+## First 3 tli's are from the first rep meaning they have different sample size.  There are 3 tli's, because there are 3 samples being tested
+## the second set of 3 samples is from the second round.  Can we stack them?
+power_efa_unlist = round(unlist(power_efa),3)
+## Grab the tli for all data sets and reps.  There 
+power_efa_matrix = matrix(power_efa_unlist, ncol = 3, byrow = TRUE)
+### split data every third row by the number 
+colnames(power_efa_matrix) = c("tli", "rmsea", "chi_p")
+rownames(power_efa_matrix) = c(rep(n_sample, reps))
+power_efa_matrix
+
+
+
 
 ```
 Check this out
 ```{r}
 
 alpha <- 0.05 #alpha level
-d <- 80 #degrees of freedom
-n <- 100 #sample size
+d <- 20 #degrees of freedom
+n <- 200 #sample size
 rmsea0 <- 0.1 #null hypothesized RMSEA
 rmseaa <- 0.05 #alternative hypothesized RMSEA
 
@@ -413,5 +312,45 @@ if(rmsea0>rmseaa) {
     pow <- 1-pchisq(cval,d,ncp=ncpa,lower.tail=F)
 }
 print(pow)
+```
+Try generating a correlation matrix
+https://www.rdocumentation.org/packages/clusterGeneration/versions/1.3.4/topics/rcorrmatrix
+https://www.r-bloggers.com/simulating-data-following-a-given-covariance-structure/
+```{r}
+# number of observations to simulate
+nobs = 100
+ 
+# Using a correlation matrix (let' assume that all variables
+# have unit variance
+M = matrix(c(rep(.7,100)), nrow=10, ncol=10)
+diag(M) = 1
+diag(M)
+# Cholesky decomposition
+L = chol(M)
+nvars = dim(L)[1]
+nvars 
+# R chol function produces an upper triangular version of L
+# so we have to transpose it.
+# Just to be sure we can have a look at t(L) and the
+# product of the Cholesky decomposition by itself
+ 
+t(L)
+ 
+t(L) %*% L
+ 
+ 
+# Random variables that follow an M correlation matrix
+r = t(L) %*% matrix(rnorm(nvars*nobs), nrow=nvars, ncol=nobs)
+r = t(r)
+rdata = as.data.frame(r)
+
+cor(rdata)
+```
+Power analysis for pearson correlation
+Pearson correlation, two tailed test power of .8 and significance level of .05.
+```{r}
+library(pwr)
+pwr.r.test(n = 500, r = .7)
+pwr.r.test
 ```
 

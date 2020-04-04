@@ -322,7 +322,7 @@ nobs = 100
  
 # Using a correlation matrix (let' assume that all variables
 # have unit variance
-M = matrix(c(rep(.7,100)), nrow=10, ncol=10)
+M = matrix(c(rep(.7,100)), ncol = 2)
 diag(M) = 1
 diag(M)
 # Cholesky decomposition
@@ -344,7 +344,9 @@ r = t(L) %*% matrix(rnorm(nvars*nobs), nrow=nvars, ncol=nobs)
 r = t(r)
 rdata = as.data.frame(r)
 
-cor(rdata)
+### Same for paired or not
+cor(mtcars$mpg, mtcars$cyl)
+cor.test(mtcars$mpg, mtcars$cyl)
 ```
 Power analysis for pearson correlation
 Pearson correlation, two tailed test power of .8 and significance level of .05.

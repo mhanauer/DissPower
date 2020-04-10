@@ -16,29 +16,104 @@ pwr.t.test(n = 11, d = .8, type = "paired", alternative = "greater")
 pwr.t.test(n = 14, d = .7, type = "paired", alternative = "greater")
 pwr.t.test(n = 19, d = .6, type = "paired", alternative = "greater")
 
+pwr.t.test
 
 ### Knowledge not normal
 #1 effect size
 library(wmwpow)
+set.seed(123)
+wmwpowd_paired = function (n, m, distn, distm, sides = "two.sided", alpha = 0.05, 
+    nsims = 10000) 
+{
+    dist1 <- distn
+    dist2 <- distm
+    n1 = n
+    n2 = m
+    if (is.numeric(n1) == F | is.numeric(n2) == F) {
+        stop("n1 and n2 must be numeric")
+    }
+    if (is.character(dist1) == F | is.character(dist2) == F | 
+        !(sub("[^A-z]+", "", dist1) %in% c("norm", 
+            "beta", "cauchy", "f", "gamma", 
+            "lnorm", "unif", "weibull", "exp", 
+            "chisq", "t", "doublex")) | !(sub("[^A-z]+", 
+        "", dist2) %in% c("norm", "beta", "cauchy", 
+        "f", "gamma", "lnorm", "unif", 
+        "weibull", "exp", "chisq", "t", 
+        "doublex"))) {
+        stop("distn and distm must be characters in the form of distribution(parmater1) or distribution(paramter1, parameter2).\n         See documentation for details.")
+    }
+    if (is.numeric(alpha) == F) {
+        stop("alpha must be numeric")
+    }
+    if (is.numeric(nsims) == F) {
+        stop("nsims must be numeric")
+    }
+    if (!(sides %in% c("less", "greater", "two.sided"))) {
+        stop("sides must be character value of less, greater, or two.sided")
+    }
+    if (sides == "two.sided") {
+        test_sides <- "Two-sided"
+    }
+    if (sides %in% c("less", "greater")) {
+        test_sides <- "One-sided"
+    }
+    dist1_func_char <- paste("r", sub("\\(.*", "", 
+        dist1), "(", n1, ",", sub(".*\\(", 
+        "", dist1), sep = "")
+    dist2_func_char <- paste("r", sub("\\(.*", "", 
+        dist2), "(", n2, ",", sub(".*\\(", 
+        "", dist2), sep = "")
+    power_sim_func <- function() {
+        wilcox.test(eval(parse(text = dist1_func_char)), eval(parse(text = dist2_func_char)), 
+            paired = T, correct = F, alternative = sides, exact = T)$p.value
+    }
+    pval_vect <- replicate(nsims, power_sim_func())
+    empirical_power <- round(sum(pval_vect < alpha)/length(pval_vect), 
+        3)
+    dist1_func_ppp <- paste("r", sub("\\(.*", "", 
+        dist1), "(", 1e+07, ",", sub(".*\\(", 
+        "", dist1), sep = "")
+    dist2_func_ppp <- paste("r", sub("\\(.*", "", 
+        dist2), "(", 1e+07, ",", sub(".*\\(", 
+        "", dist2), sep = "")
+    p <- round(sum(eval(parse(text = dist1_func_ppp)) < eval(parse(text = dist2_func_ppp)))/1e+07, 
+        3)
+    wmw_odds <- round(p/(1 - p), 3)
+    cat("Supplied distribution 1: ", dist1, "; n = ", 
+        n1, "\n", "Supplied distribution 2: ", dist2, 
+        "; m = ", n2, "\n\n", "p: ", p, "\n", 
+        "WMW odds: ", wmw_odds, "\n", "Number of simulated datasets: ", 
+        nsims, "\n", test_sides, " WMW test (alpha = ", 
+        alpha, ")\n\n", "Empirical power: ", empirical_power, 
+        sep = "")
+    output_list <- list(empirical_power = empirical_power, alpha = alpha, 
+        test_sides = test_sides, p = p, wmw_odds = wmw_odds, 
+        distn = dist1, distm = dist2, n = n1, m = n2)
+}
+
 (.9-.50)/.4
-wmwpowd(n = 11, m = 11, distn = "norm(.90,.3)", distm = "norm(.50,.4)", sides = "greater",
+wmwpowd_paired(n = 11, m = 11, distn = "norm(.90,.3)", distm = "norm(.50,.4)", sides = "greater",
 alpha = 0.05, nsims=10000)
 
 (.9-.54)/.4
-wmwpowd(n = 18, m = 18, distn = "norm(.90,.4)", distm = "norm(.54,.4)", sides = "greater",
+wmwpowd_paired(n = 18, m = 18, distn = "norm(.90,.4)", distm = "norm(.54,.4)", sides = "greater",
 alpha = 0.05, nsims=10000)
 
 (.9-.58)/.4
-wmwpowd(n = 21, m = 21, distn = "norm(.90,.4)", distm = "norm(.58,.4)", sides = "greater",
+wmwpowd_paired(n = 21, m = 21, distn = "norm(.90,.4)", distm = "norm(.58,.4)", sides = "greater",
 alpha = 0.05, nsims=10000)
 
 (.9-.62)/.4
-wmwpowd(n = 27, m = 27, distn = "norm(.90,.4)", distm = "norm(.62,.4)", sides = "greater",
+wmwpowd_paired(n = 27, m = 27, distn = "norm(.90,.4)", distm = "norm(.62,.4)", sides = "greater",
 alpha = 0.05, nsims=10000)
 
 (.9-.66)/.4
-wmwpowd(n = 37, m = 37, distn = "norm(.90,.4)", distm = "norm(.66,.4)", sides = "greater",
+wmwpowd_paired(n = 37, m = 37, distn = "norm(.90,.4)", distm = "norm(.66,.4)", sides = "greater",
 alpha = 0.05, nsims=10000)
+
+
+
 
 ```
 

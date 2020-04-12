@@ -112,9 +112,6 @@ alpha = 0.05, nsims=10000)
 wmwpowd_paired(n = 37, m = 37, distn = "norm(.90,.4)", distm = "norm(.66,.4)", sides = "greater",
 alpha = 0.05, nsims=10000)
 
-
-
-
 ```
 
 

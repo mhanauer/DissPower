@@ -16,100 +16,28 @@ pwr.t.test(n = 11, d = .8, type = "paired", alternative = "greater")
 pwr.t.test(n = 14, d = .7, type = "paired", alternative = "greater")
 pwr.t.test(n = 19, d = .6, type = "paired", alternative = "greater")
 
-pwr.t.test
 
 ### Knowledge not normal
 #1 effect size
 library(wmwpow)
-set.seed(123)
-wmwpowd_paired = function (n, m, distn, distm, sides = "two.sided", alpha = 0.05, 
-    nsims = 10000) 
-{
-    dist1 <- distn
-    dist2 <- distm
-    n1 = n
-    n2 = m
-    if (is.numeric(n1) == F | is.numeric(n2) == F) {
-        stop("n1 and n2 must be numeric")
-    }
-    if (is.character(dist1) == F | is.character(dist2) == F | 
-        !(sub("[^A-z]+", "", dist1) %in% c("norm", 
-            "beta", "cauchy", "f", "gamma", 
-            "lnorm", "unif", "weibull", "exp", 
-            "chisq", "t", "doublex")) | !(sub("[^A-z]+", 
-        "", dist2) %in% c("norm", "beta", "cauchy", 
-        "f", "gamma", "lnorm", "unif", 
-        "weibull", "exp", "chisq", "t", 
-        "doublex"))) {
-        stop("distn and distm must be characters in the form of distribution(parmater1) or distribution(paramter1, parameter2).\n         See documentation for details.")
-    }
-    if (is.numeric(alpha) == F) {
-        stop("alpha must be numeric")
-    }
-    if (is.numeric(nsims) == F) {
-        stop("nsims must be numeric")
-    }
-    if (!(sides %in% c("less", "greater", "two.sided"))) {
-        stop("sides must be character value of less, greater, or two.sided")
-    }
-    if (sides == "two.sided") {
-        test_sides <- "Two-sided"
-    }
-    if (sides %in% c("less", "greater")) {
-        test_sides <- "One-sided"
-    }
-    dist1_func_char <- paste("r", sub("\\(.*", "", 
-        dist1), "(", n1, ",", sub(".*\\(", 
-        "", dist1), sep = "")
-    dist2_func_char <- paste("r", sub("\\(.*", "", 
-        dist2), "(", n2, ",", sub(".*\\(", 
-        "", dist2), sep = "")
-    power_sim_func <- function() {
-        wilcox.test(eval(parse(text = dist1_func_char)), eval(parse(text = dist2_func_char)), 
-            paired = T, correct = F, alternative = sides, exact = T)$p.value
-    }
-    pval_vect <- replicate(nsims, power_sim_func())
-    empirical_power <- round(sum(pval_vect < alpha)/length(pval_vect), 
-        3)
-    dist1_func_ppp <- paste("r", sub("\\(.*", "", 
-        dist1), "(", 1e+07, ",", sub(".*\\(", 
-        "", dist1), sep = "")
-    dist2_func_ppp <- paste("r", sub("\\(.*", "", 
-        dist2), "(", 1e+07, ",", sub(".*\\(", 
-        "", dist2), sep = "")
-    p <- round(sum(eval(parse(text = dist1_func_ppp)) < eval(parse(text = dist2_func_ppp)))/1e+07, 
-        3)
-    wmw_odds <- round(p/(1 - p), 3)
-    cat("Supplied distribution 1: ", dist1, "; n = ", 
-        n1, "\n", "Supplied distribution 2: ", dist2, 
-        "; m = ", n2, "\n\n", "p: ", p, "\n", 
-        "WMW odds: ", wmw_odds, "\n", "Number of simulated datasets: ", 
-        nsims, "\n", test_sides, " WMW test (alpha = ", 
-        alpha, ")\n\n", "Empirical power: ", empirical_power, 
-        sep = "")
-    output_list <- list(empirical_power = empirical_power, alpha = alpha, 
-        test_sides = test_sides, p = p, wmw_odds = wmw_odds, 
-        distn = dist1, distm = dist2, n = n1, m = n2)
-}
-
 (.9-.50)/.4
-wmwpowd_paired(n = 11, m = 11, distn = "norm(.90,.3)", distm = "norm(.50,.4)", sides = "greater",
+wmwpowd(n = 11, m = 11, distn = "norm(.90,.3)", distm = "norm(.50,.4)", sides = "greater",
 alpha = 0.05, nsims=10000)
 
 (.9-.54)/.4
-wmwpowd_paired(n = 18, m = 18, distn = "norm(.90,.4)", distm = "norm(.54,.4)", sides = "greater",
+wmwpowd(n = 18, m = 18, distn = "norm(.90,.4)", distm = "norm(.54,.4)", sides = "greater",
 alpha = 0.05, nsims=10000)
 
 (.9-.58)/.4
-wmwpowd_paired(n = 21, m = 21, distn = "norm(.90,.4)", distm = "norm(.58,.4)", sides = "greater",
+wmwpowd(n = 21, m = 21, distn = "norm(.90,.4)", distm = "norm(.58,.4)", sides = "greater",
 alpha = 0.05, nsims=10000)
 
 (.9-.62)/.4
-wmwpowd_paired(n = 27, m = 27, distn = "norm(.90,.4)", distm = "norm(.62,.4)", sides = "greater",
+wmwpowd(n = 27, m = 27, distn = "norm(.90,.4)", distm = "norm(.62,.4)", sides = "greater",
 alpha = 0.05, nsims=10000)
 
 (.9-.66)/.4
-wmwpowd_paired(n = 37, m = 37, distn = "norm(.90,.4)", distm = "norm(.66,.4)", sides = "greater",
+wmwpowd(n = 37, m = 37, distn = "norm(.90,.4)", distm = "norm(.66,.4)", sides = "greater",
 alpha = 0.05, nsims=10000)
 
 ```
@@ -136,7 +64,7 @@ n1
 ```
 Now my study with percision of .7 .9
 ```{r}
-k = 10
+k = 3
 Za = 1.96
 e1 = (1-.7)/(1-.9)
 e1 = 2
@@ -144,8 +72,6 @@ n1_first = (8*k)/(k-1)
 n1_second = (Za/log(e1))^2
 n1 = (n1_first*n1_second)+2
 round(n1,0)
-
-round(100/7,2)
 ```
 
 Appendix RCode 3: Create function based on sim.VSS to create polytomous item structure and demonstrate item loading recovery
@@ -154,7 +80,6 @@ library(DescTools)
 library(psych)
 library(StatMeasures)
 
-
 sim_decile =  function (ncases = 1000, nvariables = 10, nfactors = 1, meanloading = 0.5) 
 {
     weight = sqrt(1 - meanloading * meanloading)
@@ -162,22 +87,80 @@ sim_decile =  function (ncases = 1000, nvariables = 10, nfactors = 1, meanloadin
     error = matrix(rnorm(ncases * nvariables), nrow = ncases, 
         ncol = nvariables)
     items = meanloading * theta + weight * error
-    items <- apply(items, 2,decile)
+    #items <- apply(items, 2,decile)
+    return(items)
+}
+dat_test = sim_decile()
+head(dat_test)
+ items <- apply(dat_test,2, function(x){CutQ(x, breaks = quantile(x, c(0,.10, .25, .4, .55, .70, .85, 1)), labels = c(1:7))})
+items
+sim_fifth =  function (ncases = 100, nvariables = 10, nfactors = 1, meanloading = 0.7) 
+{
+    weight = sqrt(1 - meanloading * meanloading)
+    theta = matrix(rnorm(ncases * nfactors), nrow = ncases, ncol = nvariables)
+    error = matrix(rnorm(ncases * nvariables), nrow = ncases, 
+        ncol = nvariables)
+    items = meanloading * theta + weight * error
+    items <- apply(items,2, function(x){CutQ(x, breaks = quantile(x, seq(0, 1, by = 0.20)), 
+    labels = c(1:5))})
+    items = apply(items, 2, function(x){as.numeric(x)})
     return(items)
 }
 
+sim_sixth =  function (ncases = 100, nvariables = 10, nfactors = 1, meanloading = 0.7) 
+{
+    weight = sqrt(1 - meanloading * meanloading)
+    theta = matrix(rnorm(ncases * nfactors), nrow = ncases, ncol = nvariables)
+    error = matrix(rnorm(ncases * nvariables), nrow = ncases, 
+        ncol = nvariables)
+    items = meanloading * theta + weight * error
+    items <- apply(items,2, function(x){CutQ(x, breaks = quantile(x, seq(0, 1, by = 0.20)), 
+    labels = c(1:5))})
+    items = apply(items, 2, function(x){as.numeric(x)})
+    return(items)
+}
+
+sim_seventh =  function (ncases = 100, nvariables = 10, nfactors = 1, meanloading = 0.7) 
+{
+    weight = sqrt(1 - meanloading * meanloading)
+    theta = matrix(rnorm(ncases * nfactors), nrow = ncases, ncol = nvariables)
+    error = matrix(rnorm(ncases * nvariables), nrow = ncases, 
+        ncol = nvariables)
+    items = meanloading * theta + weight * error
+    items <- apply(items,2, function(x){CutQ(x, breaks = quantile(x, c(0,.10, .25, .4, .55, .70, .85, 1)), labels = c(1:7))})
+    items = apply(items, 2, function(x){as.numeric(x)})
+    return(items)
+}
+sim_eight =  function (ncases = 100, nvariables = 10, nfactors = 1, meanloading = 0.7) 
+{
+    weight = sqrt(1 - meanloading * meanloading)
+    theta = matrix(rnorm(ncases * nfactors), nrow = ncases, ncol = nvariables)
+    error = matrix(rnorm(ncases * nvariables), nrow = ncases, 
+        ncol = nvariables)
+    items = meanloading * theta + weight * error
+    items <- apply(items,2, function(x){CutQ(x, breaks = quantile(x, c(0,.125, .125*2, .125*3, .125*4, .125*5, .125*6, .125*7, 1)), labels = c(0:7))})
+    items = apply(items, 2, function(x){as.numeric(x)})
+    return(items)
+}
+sim_fifth(ncases = 100)
+sim_seventh(ncases = 100)
 ### decile
 dat_decile =  sim_decile()
-fa_replication  = fa(dat_decile, 1, rotate="varimax", cor = "cor")
+dat_fifth = sim_fifth()
+dat_seventh = sim_seventh(ncases = 130)
+dat_dicot = sim.VSS(ncases = 500, meanloading = .7, nvariables = 10, nfactors = 1, dichot = TRUE)
+fa_replication  = fa(dat_dicot, 1, rotate="varimax", cor = "tet")
+fa_replication
 fa_replication$loadings
+fa_replication
 mean(fa_replication$loadings)
 ```
 
 
 Ok create simulation
 ```{r}
-
-n_sample = seq(from = 70, to = 120, by = 10)
+set.seed(123)
+n_sample = seq(from = 90, to = 140, by = 10)
 
 efa_power= function(){
 
@@ -187,9 +170,10 @@ rmsea = list()
 chi_squre_p = list()
 dat_vss = list()
 dat_out = list()
+fa_vss = list()
 for(i in 1:length(n_sample)){
-dat_vss[[i]] = sim_fifth(ncases=n_sample[[i]], nvariables=10, nfactors=1, meanloading=.7)
-fa_vss[[i]] = fa(dat_vss[[i]], 1, rotate="varimax", cor = "cor")
+dat_vss[[i]] = sim_eight(ncases=n_sample[[i]], nvariables=10, nfactors=1, meanloading=.7)
+fa_vss[[i]] = fa(dat_vss[[i]], 1, rotate="varimax", cor = "cor", correct = 0)
 tli_out[[i]] = fa_vss[[i]]$TLI
 rmsea[[i]] = fa_vss[[i]]$RMSEA[1]
 chi_squre_p[[i]] = fa_vss[[i]]$PVAL 
@@ -198,7 +182,7 @@ dat_out[[i]] = list(tli_out = tli_out[[i]], rmsea = rmsea[[i]], chi_squre_p = ch
 return(dat_out)
 }
 ### grab each of them sum them then divide by respective n's
-reps = 100
+reps = 10000
 power_efa = replicate(n = reps, efa_power(), simplify = FALSE)
 ## First 3 tli's are from the first rep meaning they have different sample size.  There are 3 tli's, because there are 3 samples being tested
 ## the second set of 3 samples is from the second round.  Can we stack them?
@@ -218,6 +202,7 @@ power_efa_agg = aggregate(power_efa_df[,1:3], by=list(n=power_efa_df$n), FUN=sum
 # divide by number of reps for %
 power_efa_agg[,2:4] =  round(power_efa_agg[,2:4]/reps,3)
 power_efa_agg
+write.csv(power_efa_agg,"power_efa_agg.csv", row.names = FALSE)
 ```
 RCode  
 ```{r}

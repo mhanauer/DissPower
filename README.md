@@ -162,7 +162,9 @@ sim_decile =  function (ncases = 1000, nvariables = 10, nfactors = 1, meanloadin
     error = matrix(rnorm(ncases * nvariables), nrow = ncases, 
         ncol = nvariables)
     items = meanloading * theta + weight * error
-    #items <- apply(items, 2,decile)
+     items <- apply(items,2, function(x){CutQ(x, breaks = quantile(x, seq(0, 1, by = 0.10)), 
+    labels = c(0:9))})
+    items = apply(items, 2, function(x){as.numeric(x)})
     return(items)
 }
 dat_test = sim_decile()
@@ -223,7 +225,7 @@ sim_seventh(ncases = 100)
 dat_decile =  sim_decile()
 dat_fifth = sim_fifth()
 dat_seventh = sim_seventh(ncases = 130)
-dat_dicot = sim.VSS(ncases = 500, meanloading = .7, nvariables = 10, nfactors = 1, dichot = TRUE)
+dat_dicot = sim.VSS(ncases = 1100, meanloading = .7, nvariables = 10, nfactors = 1, dichot = TRUE)
 fa_replication  = fa(dat_dicot, 1, rotate="varimax", cor = "tet")
 fa_replication
 fa_replication$loadings
@@ -359,4 +361,13 @@ pwr.r.test(n = 100, r = .7)
 pwr.r.test
 
 ```
+Try out item analysis
+```{r}
+library(sjPlot)
+dat_decile =  sim_decile(ncases = 110)
+head(dat_decile)
+dat_decile = data.frame(dat_decile)
+tab_itemscale(dat_decile)
+```
+
 

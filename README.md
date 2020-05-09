@@ -163,7 +163,16 @@ sim_decile =  function (ncases = 1000, nvariables = 10, nfactors = 1, meanloadin
     return(items)
 }
 
+
 ```
+Poly does not work with more than eight response options 
+```{r}
+test_dat = sim_decile(ncases = 110)
+test_dat
+fa(test_dat, 1, rotate="varimax", cor = "poly", correct = 0)
+```
+
+
 Make sure factor loading is recovered
 ```{r}
 set.seed(123)
@@ -176,7 +185,7 @@ fa_vss = list()
 fa_vss_mean = list()
 for(i in 1:length(n_sample)){
 dat_vss[[i]] = sim_decile(ncases=n_sample[[i]], nvariables=10, nfactors=1, meanloading=.7)
-fa_vss[[i]] = fa(dat_vss[[i]], 1, rotate="varimax", cor = "cor", correct = 0)
+fa_vss[[i]] = fa(dat_vss[[i]], 1, rotate="varimax", cor = "cor")
 fa_vss_mean[[i]] = mean(fa_vss[[i]]$loadings)
 }
 return(fa_vss_mean)
@@ -222,7 +231,7 @@ dat_out = list()
 fa_vss = list()
 for(i in 1:length(n_sample)){
 dat_vss[[i]] = sim_eight(ncases=n_sample[[i]], nvariables=10, nfactors=1, meanloading=.7)
-fa_vss[[i]] = fa(dat_vss[[i]], 1, rotate="varimax", cor = "cor", correct = 0)
+fa_vss[[i]] = fa(dat_vss[[i]], 1, rotate="varimax", cor = "cor")
 tli_out[[i]] = fa_vss[[i]]$TLI
 rmsea[[i]] = fa_vss[[i]]$RMSEA[1]
 chi_squre_p[[i]] = fa_vss[[i]]$PVAL 

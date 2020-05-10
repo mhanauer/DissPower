@@ -292,48 +292,6 @@ fa_replication$loadings
 mean(fa_replication$loadings)
 
 ```
-
-
-
-Try generating a correlation matrix
-https://www.rdocumentation.org/packages/clusterGeneration/versions/1.3.4/topics/rcorrmatrix
-https://www.r-bloggers.com/simulating-data-following-a-given-covariance-structure/
-```{r}
-# number of observations to simulate
-nobs = 100
- 
-# Using a correlation matrix (let' assume that all variables
-# have unit variance 10 items
-M = matrix(c(rep(.7,100)), ncol = 10, nrow = 10)
-diag(M) = 1
-diag(M)
-# Cholesky decomposition
-L = chol(M)
-nvars = dim(L)[1]
-nvars 
-# R chol function produces an upper triangular version of L
-# so we have to transpose it.
-# Just to be sure we can have a look at t(L) and the
-# product of the Cholesky decomposition by itself
- 
-t(L)
- 
-t(L) %*% L
- 
- 
-# Random variables that follow an M correlation matrix
-r = t(L) %*% matrix(rnorm(nvars*nobs), nrow=nvars, ncol=nobs)
-r = t(r)
-rdata = as.data.frame(r)
-## Now cut
-
-
-rdata_cut <- apply(rdata,2, function(x){CutQ(x, breaks = quantile(x, seq(0, 1, by = 0.20)),labels = c(1:5))}) 
-
-### Same for paired or not
-cor(mtcars$mpg, mtcars$cyl)
-cor.test(mtcars$mpg, mtcars$cyl)
-```
 Power analysis for pearson correlation
 Pearson correlation, two tailed test power of .8 and significance level of .05.
 ```{r}

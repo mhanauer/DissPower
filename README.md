@@ -128,7 +128,7 @@ dat_out[[i]] = list(tli_out = tli_out[[i]], rmsea = rmsea[[i]], chi_squre_p = ch
 return(dat_out)
 }
 ### grab each of them sum them then divide by respective n's
-reps = 100
+reps = 10000
 power_efa = replicate(n = reps, efa_power(), simplify = FALSE)
 ## First 3 tli's are from the first rep meaning they have different sample size.  There are 3 tli's, because there are 3 samples being tested
 ## the second set of 3 samples is from the second round.  Stack them.

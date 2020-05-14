@@ -54,8 +54,6 @@ sim_decile =  function (ncases = 1000, nvariables = 10, nfactors = 1, meanloadin
     items = apply(items, 2, function(x){as.numeric(x)})
     return(items)
 }
-
-
 ```
 Poly does not work with more than eight response options 
 ```{r}
@@ -63,8 +61,6 @@ test_dat = sim_decile(ncases = 110)
 test_dat
 fa(test_dat, 1, rotate="varimax", cor = "poly", correct = 0)
 ```
-
-
 Appendix Rcode 3: Parameter recovery analysis
 ```{r}
 set.seed(123)
@@ -149,39 +145,8 @@ power_efa_agg[,2:4] =  round(power_efa_agg[,2:4]/reps,3)
 power_efa_agg
 write.csv(power_efa_agg,"power_efa_agg.csv", row.names = FALSE)
 ```
-Appendix Rcode 5: T-test power analysis for study three
-```{r}
-## Knowledge
-pwr.t.test(n = 8, d = 1, type = "paired", alternative = "greater")
-pwr.t.test(n = 10, d = .9, type = "paired", alternative = "greater")
-pwr.t.test(n = 11, d = .8, type = "paired", alternative = "greater")
-pwr.t.test(n = 14, d = .7, type = "paired", alternative = "greater")
 
-### Knowledge not normal
-#1 effect size
-library(wmwpow)
-(8-4)/4
-wmwpowd_paired(n = 15, m = 15, distn = "norm(8,4)", distm = "norm(4,4)", sides = "greater",
-alpha = 0.05, nsims=10000)
-
-
-(8-4.4)/4
-wmwpowd_paired(n = 18, m = 18, distn = "norm(8,4)", distm = "norm(4.4,4)", sides = "greater",
-alpha = 0.05, nsims=10000)
-
-(8-4.8)/4
-wmwpowd_paired(n = 22, m = 22, distn = "norm(8,4)", distm = "norm(4.8,4)", sides = "greater",
-alpha = 0.05, nsims=10000)
-
-(8-5.2)/4
-wmwpowd_paired(n = 28, m = 28, distn = "norm(8,4)", distm = "norm(5.2,4)", sides = "greater",
-alpha = 0.05, nsims=10000)
-
-
-```
-
-
-Appendix Rcode 6: Altered power for Wilcoxon rank sum test
+Appendix Rcode 5: Altered wmwpowd function
 ```{r}
 wmwpowd_paired = function (n, m, distn, distm, sides = "two.sided", alpha = 0.05, 
     nsims = 10000) 
@@ -253,6 +218,38 @@ wmwpowd_paired = function (n, m, distn, distm, sides = "two.sided", alpha = 0.05
         distn = dist1, distm = dist2, n = n1, m = n2)
 }
 ```
+
+Appendix Rcode 6: T-test and Wilcoxon rank sum test power analysis for study three
+```{r}
+## Knowledge
+pwr.t.test(n = 8, d = 1, type = "paired", alternative = "greater")
+pwr.t.test(n = 10, d = .9, type = "paired", alternative = "greater")
+pwr.t.test(n = 11, d = .8, type = "paired", alternative = "greater")
+pwr.t.test(n = 14, d = .7, type = "paired", alternative = "greater")
+
+### Knowledge not normal
+#1 effect size
+library(wmwpow)
+(8-4)/4
+wmwpowd_paired(n = 15, m = 15, distn = "norm(8,4)", distm = "norm(4,4)", sides = "greater",
+alpha = 0.05, nsims=10000)
+
+
+(8-4.4)/4
+wmwpowd_paired(n = 18, m = 18, distn = "norm(8,4)", distm = "norm(4.4,4)", sides = "greater",
+alpha = 0.05, nsims=10000)
+
+(8-4.8)/4
+wmwpowd_paired(n = 22, m = 22, distn = "norm(8,4)", distm = "norm(4.8,4)", sides = "greater",
+alpha = 0.05, nsims=10000)
+
+(8-5.2)/4
+wmwpowd_paired(n = 28, m = 28, distn = "norm(8,4)", distm = "norm(5.2,4)", sides = "greater",
+alpha = 0.05, nsims=10000)
+
+
+```
+
 
  
 

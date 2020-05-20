@@ -249,7 +249,22 @@ alpha = 0.05, nsims=10000)
 
 
 ```
+Appendix Rcode 7: Power for test restest 
+```{r}
+library(BiocManager)
+library(genefu)
+power.cor
+power.cor(rho = .75, w=.1, alpha = .05, method = "spearman")
+power.cor(rho = .8, w=.1, alpha = .05, method = "spearman")
+power.cor(rho = .85, w=.1, alpha = .05, method = "spearman")
+power.cor(rho = .9, w=.1, alpha = .05, method = "spearman")
 
+power.cor(rho = .75, w=.1, alpha = .05, method = "pearson")
+power.cor(rho = .8, w=.1, alpha = .05, method = "pearson")
+power.cor(rho = .85, w=.1, alpha = .05, method = "pearson")
+power.cor(rho = .9, w=.1, alpha = .05, method = "pearson")
+citation("genefu")
+```
 
  
 

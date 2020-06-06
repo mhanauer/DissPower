@@ -49,7 +49,7 @@ sim_decile =  function (ncases = 1000, nvariables = 10, nfactors = 1, meanloadin
     error = matrix(rnorm(ncases * nvariables), nrow = ncases, 
         ncol = nvariables)
     items = meanloading * theta + weight * error
-     items <- apply(items,2, function(x){CutQ(x, breaks = quantile(x, c(0, .20, .30, .40, .50, .60, .70, .80, .90, 1)), 
+     items <- apply(items,2, function(x){CutQ(x, breaks = quantile(x, c(0, .05, .15, .30, .45, .60, .75, .85, .95, 1)), 
     labels = c(0:8))})
     items = apply(items, 2, function(x){as.numeric(x)})
     return(items)
@@ -103,7 +103,7 @@ write.csv(recover,"recover.csv")
 Appendix Rcode 4: Power analysis for EFA
 ```{r}
 set.seed(123)
-n_sample = seq(from = 90, to = 140, by = 10)
+n_sample = seq(from = 80, to = 140, by = 10)
 
 efa_power= function(){
 
@@ -137,7 +137,7 @@ power_efa_df = data.frame(power_efa_matrix)
 power_efa_df$n = rep(n_sample, reps)
 power_efa_df$tli = ifelse(power_efa_df$tli >= .95,1,0)
 power_efa_df$rmsea = ifelse(power_efa_df$rmsea <= .05,1,0)
-power_efa_df$chi_p = ifelse(power_efa_df$chi_p > .05,1,0)
+power_efa_df$chi_p = ifelse(power_efa_df$chi_p >= .05,1,0)
 
 
 power_efa_agg = aggregate(power_efa_df[,1:3], by=list(n=power_efa_df$n), FUN=sum)

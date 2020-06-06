@@ -49,11 +49,12 @@ sim_decile =  function (ncases = 1000, nvariables = 10, nfactors = 1, meanloadin
     error = matrix(rnorm(ncases * nvariables), nrow = ncases, 
         ncol = nvariables)
     items = meanloading * theta + weight * error
-     items <- apply(items,2, function(x){CutQ(x, breaks = quantile(x, seq(0, 1, by = 0.10)), 
-    labels = c(0:9))})
+     items <- apply(items,2, function(x){CutQ(x, breaks = quantile(x, c(0, .20, .30, .40, .50, .60, .70, .80, .90, 1)), 
+    labels = c(0:8))})
     items = apply(items, 2, function(x){as.numeric(x)})
     return(items)
 }
+
 ```
 Poly does not work with more than eight response options 
 ```{r}
